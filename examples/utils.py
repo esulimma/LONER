@@ -119,5 +119,5 @@ def msg_to_transformation_mat(tf_msg):
 def load_calibration(dataset_family: str, calib_path: str):
     if dataset_family.lower() == "fusion_portable":
         return FusionPortableCalibration(calib_path)
-    print("Warning: Supplied dataset has no calibration configured. Don't enable the camera!")
+    # print("Warning: Supplied dataset has no calibration configured. Don't enable the camera!")
     return None
