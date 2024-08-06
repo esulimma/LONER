@@ -91,33 +91,42 @@ if args.ckpt_id is None:
 else:
     checkpoint = f"ckpt_{args.ckpt_id}.tar"
 
+checkpoint = f"final_1260.tar"
+
 checkpoint_path = pathlib.Path(f"{args.experiment_directory}/checkpoints/{checkpoint}")
 
 if args.sep_ckpt_result:
     render_dir = pathlib.Path(f"{args.experiment_directory}/renders/{checkpoint}_start{args.start_frame}_step{args.skip_step}")
 else:
-    render_dir = pathlib.Path(f"{args.experiment_directory}/renders")
+    render_dir = pathlib.Path(f"{args.experiment_directory}/00_renders")
 os.makedirs(render_dir, exist_ok=True)
 
 # override any params loaded from yaml
 with open(f"{args.experiment_directory}/full_config.pkl", 'rb') as f:
     full_config = pickle.load(f)
 
-if full_config["calibration"]["camera_intrinsic"]["width"] is not None:
-    full_config["calibration"]["camera_intrinsic"]["width"] *= IM_SCALE_FACTOR
-    full_config["calibration"]["camera_intrinsic"]["height"] *= IM_SCALE_FACTOR
-    full_config["calibration"]["camera_intrinsic"]["k"] *= IM_SCALE_FACTOR
-    full_config["calibration"]["camera_intrinsic"]["new_k"] *= IM_SCALE_FACTOR
-else:
-    # Sensible defaults for lidar-only case
-    full_config["calibration"]["camera_intrinsic"]["width"] = int(1024/2 * IM_SCALE_FACTOR)
-    full_config["calibration"]["camera_intrinsic"]["height"] = int(768/2 * IM_SCALE_FACTOR)
-    full_config["calibration"]["camera_intrinsic"]["k"] = torch.Tensor([[302,  0.0, 260],
-                                                                        [ 0.0, 302, 197],
-                                                                        [ 0.0,  0.0, 1.0]]) * IM_SCALE_FACTOR
-    full_config["calibration"]["camera_intrinsic"]["new_k"] = full_config["calibration"]["camera_intrinsic"]["k"]
-    full_config["calibration"]["camera_intrinsic"]["distortion"] = torch.zeros(4)
-    full_config["calibration"]["lidar_to_camera"]["orientation"] = np.array([0.5, -0.5, 0.5, -0.5]) # for weird compatability 
+# if full_config["calibration"]["camera_intrinsic"]["width"] is not None:
+#     full_config["calibration"]["camera_intrinsic"]["width"] *= IM_SCALE_FACTOR
+#     full_config["calibration"]["camera_intrinsic"]["height"] *= IM_SCALE_FACTOR
+#     full_config["calibration"]["camera_intrinsic"]["k"] *= IM_SCALE_FACTOR
+#     full_config["calibration"]["camera_intrinsic"]["new_k"] *= IM_SCALE_FACTOR
+# else:
+#     # Sensible defaults for lidar-only case
+#     full_config["calibration"]["camera_intrinsic"]["width"] = int(1024/2 * IM_SCALE_FACTOR)
+#     full_config["calibration"]["camera_intrinsic"]["height"] = int(768/2 * IM_SCALE_FACTOR)
+#     full_config["calibration"]["camera_intrinsic"]["k"] = torch.Tensor([[302,  0.0, 260],
+#                                                                         [ 0.0, 302, 197],
+#                                                                         [ 0.0,  0.0, 1.0]]) * IM_SCALE_FACTOR
+#     full_config["calibration"]["camera_intrinsic"]["new_k"] = full_config["calibration"]["camera_intrinsic"]["k"]
+#     full_config["calibration"]["camera_intrinsic"]["distortion"] = torch.zeros(4)
+#     full_config["calibration"]["lidar_to_camera"]["orientation"] = np.array([0.5, -0.5, 0.5, -0.5]) # for weird compatability 
+
+full_config["calibration"]["camera_intrinsic"]["k"] = torch.tensor(full_config["calibration"]["camera_intrinsic"]["k"])
+full_config["calibration"]["camera_intrinsic"]["new_k"] = full_config["calibration"]["camera_intrinsic"]["k"]
+full_config["calibration"]["camera_intrinsic"]["distortion"] = torch.tensor(full_config["calibration"]["camera_intrinsic"]["distortion"])
+full_config["calibration"]["lidar_to_camera"]["orientation"] = np.array(full_config["calibration"]["lidar_to_camera"]["orientation"]) # for weird compatability 
+full_config["calibration"]["lidar_to_camera"]["xyz"] = np.array(full_config["calibration"]["lidar_to_camera"]["xyz"])
+
 
 intrinsic = full_config.calibration.camera_intrinsic
 im_size = torch.Tensor([intrinsic.height, intrinsic.width])
@@ -256,6 +265,7 @@ if __name__ == "__main__":
                 cam_pose = lidar_pose.to('cpu') * lidar_to_camera.to('cpu')
                 rgb, depth, _ = render_dataset_frame(cam_pose.to(_DEVICE))
                 save_depth(depth, f"predicted_depth_{timestamp}.png", render_dir, max_depth=75) # canteen 30 mcr 10
+                save_rgb_cv2(rgb, f"predicted_rgb_{timestamp}.png", render_dir)
             sys.exit()
 
         if not args.no_render_stills:
@@ -279,6 +289,7 @@ if __name__ == "__main__":
                 rgb, depth, _ = render_dataset_frame(cam_pose.to(_DEVICE))
 
                 save_depth(depth, f"predicted_depth_{timestamp_str}.png", render_dir, max_depth=75)
+                save_rgb_cv2(rgb, f"predicted_rgb_{timestamp}.png", render_dir)
 
             if args.get_matching_rgb:
                 import cv2
