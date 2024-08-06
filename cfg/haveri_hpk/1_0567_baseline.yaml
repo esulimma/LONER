@@ -1,0 +1,42 @@
+baseline: defaults.yaml
+dataset: ~/data/haveri_hpk/1_0567/harveri-hpk_1_0567_adjusted.bag
+calibration: NULL
+groundtruth_traj: ~/data/haveri_hpk/1_0567/ground_truth_traj.txt
+experiment_name: 1-0567_baseline
+dataset_family: newer_college
+changes:
+  system:
+    world_cube:
+      compute_from_groundtruth: False
+      trajectory_bounding_box:
+        x: [-51, 39]
+        y: [-97,39]
+        z: [-2.75,19.15]
+    ros_names:
+      camera: "zed_node/depth/depth_registered"
+      lidar: "hesai/pandar"
+      camera_suffix: "zed2i"
+      topic_prefix: "" 
+  mapper:
+    keyframe_manager:
+      keyframe_selection:
+        # Options: TEMPORAL, MOTION, HYBRID (TEMPORAL & MOTION) [default],
+        # or HYBRID_LAZY (Temporal & Motion, but don't re-run anything while you wait). 
+        strategy: TEMPORAL
+        temporal:
+          time_diff_seconds: &keyframe_interval 3
+    optimizer:
+      model_config:
+        data:
+          ray_range: &ray_range [1, 30]
+        model:
+          ray_range: *ray_range
+meshing_bounding_box:
+  x: [-51, 39]
+  y: [-97,39] #driving direction
+  z: [-2.75,19.15]
+lidar_vertical_fov: [-52.1, 52.1]
+
+#x: [-45, 35]
+#y: [-80, 70] #driving direction
+#z: [-5, 12]
