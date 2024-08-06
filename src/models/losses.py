@@ -34,7 +34,7 @@ def get_weights_gt(sampled_depth, gt_depth, eps, norm=True):
     def _get_norm_cdf(x):
         return 0.5 * (1 + torch.erf(x / np.sqrt(2)))
 
-    sigma = eps / 3
+    sigma = eps / 9
 
     clip_a = (gt_depth - eps - gt_depth) / sigma
     clip_b = (gt_depth + eps - gt_depth) / sigma

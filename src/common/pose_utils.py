@@ -148,6 +148,69 @@ def _get_view_frustum_corners(K, H, W, min_depth=1, max_depth=1e6):
                           * min_depth, -min_depth, 1],   # right, down, near
                          [(W-K[0, 2]) / K[0, 0] * max_depth, -(H-K[1, 2]) / K[1, 1] * max_depth, -max_depth, 1]])  # right, down, far
 
+
+def compute_smaller_world_cube(lidar_poses, ray_range, padding=0.1, traj_bounding_box=None) -> WorldCube:
+
+    assert 0 <= padding < 1
+    
+    assert lidar_poses is not None or traj_bounding_box is not None
+
+    all_corners = []
+
+    if lidar_poses is None:
+        print("Computing world cube using supplied trajectory bounding box")
+        x_min, x_max = traj_bounding_box['x']
+        y_min, y_max = traj_bounding_box['y']
+        z_min, z_max = traj_bounding_box['z']
+
+        x_range = torch.Tensor([x_min, x_max])
+        y_range = torch.Tensor([y_min, y_max])
+        z_range = torch.Tensor([z_min, z_max])
+
+        all_combos = torch.stack(torch.meshgrid([x_range, y_range, z_range]), dim=-1).reshape(-1, 3, 1)
+        
+        lidar_poses = torch.eye(4).tile((8, 1, 1))
+        
+        lidar_poses[:,:3,3:4] = all_combos
+    else:
+        print("Computing world cube with groundtruth poses")
+        lidar_poses = lidar_poses @ lidar_poses[0,:,:].inverse()
+
+
+        # all_corners = torch.cat(all_corners, dim=0)  # (8N, 3)
+        all_poses = lidar_poses[..., :3, 3]
+
+        max_depth = ray_range[1]/2
+
+        lidar_view_corners = torch.Tensor([[-max_depth, -max_depth, -max_depth, 1],
+                                        [-max_depth, max_depth, -max_depth, 1],
+                                        [max_depth, -max_depth, -max_depth, 1],
+                                        [max_depth, max_depth, -max_depth, 1],
+                                        [-max_depth, -max_depth, max_depth, 1],
+                                        [-max_depth, max_depth, max_depth, 1],
+                                        [max_depth, -max_depth, max_depth, 1],
+                                        [max_depth, max_depth, max_depth, 1]])
+
+        for c2l in lidar_poses:
+            corners = c2l[:3,:] @ lidar_view_corners.T
+            all_corners += [corners.T]
+
+        all_corners = torch.cat(all_corners, dim=0)
+
+        all_poses = lidar_poses[...,:3,3]
+
+    all_points = torch.cat([all_corners, all_poses])
+
+    min_coord = all_points.min(dim=0)[0]
+    max_coord = all_points.max(dim=0)[0]
+
+    origin = min_coord + (max_coord - min_coord) / 2
+
+    scale_factor = (torch.linalg.norm(max_coord - min_coord) /
+                    (2 * torch.sqrt(torch.Tensor([3])))) * (1+padding)
+
+    return WorldCube(scale_factor, -origin)
+
 ## Compute an axis aligned minimal cube encompassing sensor poses and camera view frustums with 
 # the given camera range. An additional padding is added. 
 # @param camera_to_lidar: The extrinsic calibration
@@ -156,7 +219,7 @@ def _get_view_frustum_corners(K, H, W, min_depth=1, max_depth=1e6):
 # @param lidar_poses: Groundtruth lidar poses
 # @param ray_range: A tuple with min and max camera range
 # @param padding: 0 means no extra padding is added, the cube is doubled in each axis
-def compute_world_cube(camera_to_lidar, intrinsic_mats, image_sizes, lidar_poses, ray_range, padding=0.1, traj_bounding_box=None) -> WorldCube:
+def compute_world_cube(camera_to_lidar, intrinsic_mats, image_sizes, lidar_poses, ray_range, padding=0.1, traj_bounding_box=None, submap = None) -> WorldCube:
 
     assert 0 <= padding < 1
     
@@ -179,7 +242,10 @@ def compute_world_cube(camera_to_lidar, intrinsic_mats, image_sizes, lidar_poses
         lidar_poses[:,:3,3:4] = all_combos
     else:
         print("Computing world cube with groundtruth poses")
-        lidar_poses = lidar_poses @ lidar_poses[0,:,:].inverse()
+        if submap is not None:
+            lidar_poses = lidar_poses
+        else:
+            lidar_poses = lidar_poses @ lidar_poses[0,:,:].inverse()
 
     if camera_to_lidar is None:
         camera_poses = []

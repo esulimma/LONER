@@ -219,9 +219,8 @@ class LidarScan:
         h = torch.Tensor([0, 0, 0, 1]).to(T_world_to_compensated_lidar.device).repeat(N, 1, 1)
         T_world_to_compensated_lidar = torch.cat([T_world_to_compensated_lidar, h], dim=1)
 
-
         T_world_to_target = target_frame.get_transformation_matrix().detach().to(device)
-        T_target_to_compensated_lidar = torch.linalg.inv(T_world_to_target) @ T_world_to_compensated_lidar
+        T_target_to_compensated_lidar = torch.linalg.inv(T_world_to_target) @ T_world_to_compensated_lidar.type(T_world_to_target.dtype)
 
         points_lidar = self.ray_directions*self.distances
         points_lidar_homog = torch.vstack((points_lidar, torch.ones_like(points_lidar[0]))).to(device)
@@ -230,3 +229,5 @@ class LidarScan:
         self.distances = torch.linalg.norm(motion_compensated_points, dim=0)
         self.ray_directions = (motion_compensated_points / self.distances).to(self.timestamps.device)
         self.distances = self.distances.to(self.timestamps.device)
+
+  

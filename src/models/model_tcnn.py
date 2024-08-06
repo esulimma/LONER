@@ -67,7 +67,7 @@ class Model(nn.Module):
         out = inference(self.nerf_model, xyz_, dir_, netchunk=0, sigma_only=sigma_only, meshing=True) # TODO: fix the bug when setting netchunk size 
         return out
 
-    def forward(self, rays, ray_sampler, scale_factor, testing=False, camera=True, detach_sigma=True, return_variance=False):
+    def forward(self, rays, ray_sampler, scale_factor, testing=False, camera=True, detach_sigma=True, return_variance=False, render_strategy = 'default'):
         """Do batched inference on rays using chunk"""
 
         if testing:
@@ -90,13 +90,16 @@ class Model(nn.Module):
                             N_samples=N_samples,
                             retraw=self.cfg.render.retraw,
                             perturb=perturb,
-                            white_bkgd=self.cfg.render.white_bkgd,
+                            white_bkgd=True,
                             raw_noise_std=self.cfg.render.raw_noise_std,
                             netchunk=self.cfg.render.netchunk,
                             num_colors=self.cfg.num_colors,
                             sigma_only=(not camera),
+                            DEBUG=True,
                             detach_sigma=detach_sigma,
-                            return_variance=return_variance)
+                            return_variance=return_variance,
+                            render_strategy=render_strategy)
+            
             for k, v in rendered_ray_chunks.items():
                 results[k] += [v]
 

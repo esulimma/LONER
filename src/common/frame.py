@@ -36,6 +36,7 @@ class Frame:
                  T_lidar_to_camera: Pose = None) -> None:
 
         self.image: Image = image
+        self.mask: Image = image
         self.lidar_points: LidarScan = lidar_points
 
         self._lidar_to_camera: Pose = T_lidar_to_camera
@@ -49,7 +50,7 @@ class Frame:
     # @returns a deepcopy of the current frame
     def clone(self) -> "Frame":
         
-        attrs = ["image", "lidar_points", "_lidar_to_camera", "_lidar_pose", "_gt_lidar_pose"]
+        attrs = ["image", "mask", "lidar_points", "_lidar_to_camera", "_lidar_pose", "_gt_lidar_pose"]
 
         new_frame = Frame()
         for attr in attrs:

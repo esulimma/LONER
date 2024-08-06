@@ -290,7 +290,7 @@ class LidarRayDirections:
         
         # rotate ray directions from sensor coordinates to world coordinates
         # N x 3
-        ray_directions = (lidar_rotations @ directions).T
+        ray_directions = (lidar_rotations @ directions.type(lidar_rotations.dtype)).T
 
         # Note to self: don't use /= here. Breaks autograd.
         ray_directions = ray_directions / \

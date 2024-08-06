@@ -18,6 +18,7 @@ from common.pose import Pose
 from common.pose_utils import WorldCube
 from common.ray_utils import CameraRayDirections, LidarRayDirections
 from common.sensors import LidarScan
+from common.sensors import Image
 
 NUMERIC_TOLERANCE = 1e-9
 
@@ -62,6 +63,9 @@ class KeyFrame:
 
     def get_lidar_scan(self) -> LidarScan:
         return self._frame.lidar_points
+    
+    def get_camera_image(self) -> Image:
+        return self._frame.image
 
     def get_time(self) -> float:
         return self._frame.get_time()
@@ -107,7 +111,7 @@ class KeyFrame:
                           cam_ray_directions: CameraRayDirections,
                           world_cube: WorldCube,
                           use_gt_poses: bool = False,
-                          detach_rgb_from_poses: bool = False) -> torch.Tensor:
+                          detach_rgb_from_poses: bool = True) -> torch.Tensor:
 
 
         if use_gt_poses:

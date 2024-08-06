@@ -1,3 +1,386 @@
+# Forest Digital Twin Preface
+## Step-by-Step Instructions
+Please refer to the following markdowns for further information on how to preprocess data, optimize implicit maps, visulize results and run a ROS implementation of the implicit maps:
+
+- Data Preprocessing: [readme](/rosbag_utils/README_data_preparation.md)
+- Implicit Map Optimization [readme](/examples/README_optimize_implicit_map.md)
+- Implicit Map Evaluation [readme](/analysis/README_evaluate_results.md)
+- ROS Integration [readme](/gazebo/README_fdt_simulation.md)
+
+## Notes on Docker Layout
+The two main folders of the docker layout are 
+
+      user@host:~$/LonerSLAM
+and 
+
+      user@host:~$/data
+
+while all imports are designed to be agnostic of the naming of the source and data folder, it is still advised to keep this naming structure.
+
+so when calling from root:
+
+      esulimma@mavt-rsl-n111l:~$ ls
+
+inside the docker it should display
+
+      LonerSLAM  data
+
+# Project Structure
+
+Here is a highlight of the most important scripts and the folder structure
+
+/LonerSLAM\
+├── [analysis](/analysis)\
+│ ├── [compute_metrics](/analysis/compute_metrics) (contains scripts to compute metrics)\
+│ ├── [fdt_analysis](/analysis/fdt_analysis)\
+│ │ ├── [fdt_analysis_metrics.py](/analysis/fdt_analysis/fdt_analysis_metrics.py) (script to compute metrics)\
+│ │ ├── [fdt_analysis.py](/analysis/fdt_analysis/fdt_analysis.py) (main file for evaluating implicit maps)\
+│ ├── [README_evaluate_results.md](/analysis/README_evaluate_results.md)\
+├── assets\
+├── [cfg](/cfg) (contains config .yaml files)\
+├── docker\
+├── docs\
+├── examples\
+│ ├── [fdt_optimize_implicit_map_utils.py](/examples/fdt_optimize_implicit_map_utils.py)\
+│ ├── [fdt_optimize_implicit_map.py](/examples/fdt_optimize_implicit_map.py) (main script for optimizing implicit maps)\
+│ ├── [README_optimize_implicit_map.md](/examples/README_optimize_implicit_map.md)\
+├── gazebo\
+│ ├── [fdt_simulation](/gazebo/fdt_simulation) (main script for optimizing implicit maps)\
+│ ├── [README_fdt_simulation.md](/gazebo/README_fdt_simulation.md)\
+├── [outputs](/outputs) (contains all outputs from implicit map optimization)\
+├── [rosbag_utils](/rosbag_utils)  (contains everything necessary for data preprocessing)\
+│ ├── [README_data_preparation.md](/rosbag_utils/README_data_preparation.md)\
+├── setup_utils\
+├── src\
+│ ├── [optimizer.py](/src/optimizer.py) (main script for implicit map optimization, including RGB sigma MLP optimization)\
+└── [models](/models)\
+│ ├── [nerf_tcnn.py](/models/nerf_tcnn.py) (script containing decoupled NeRF model)\
+│ ├── [rendering_tcnn.py](/models/rendering_tcnn.py) (script for rendering, including peak rendering)\
+
+/data\
+├── haveri_hpk\
+│ ├── ... (rosbag location)\
+│ ├── ... (rosbag location)\
+│ ├── ... (rosbag location)\
+
+# Packages
+
+installed packages outside of the ones listed in the requirements file:
+
+      absl-py==0.14.1
+      addict==2.4.0
+      alabaster==0.7.12
+      ansi2html==1.8.0
+      anyio==4.0.0
+      apex==0.1
+      appdirs==1.4.4
+      argcomplete==3.1.2
+      argon2-cffi==21.1.0
+      arrow==1.3.0
+      asgiref==3.4.1
+      aspose-3d==24.1.0
+      async-lru==2.0.4
+      attrs==23.1.0
+      audioread==2.1.9
+      Babel==2.13.0
+      backcall==0.2.0
+      backports.functools-lru-cache==1.6.4
+      bagpy==0.5
+      beautifulsoup4==4.10.0
+      bitarray==2.9.2
+      bitstring==4.1.4
+      bleach==4.1.0
+      blis==0.7.4
+      brotlipy==0.7.0
+      cachetools==4.2.4
+      catalogue==2.0.6
+      catkin-pkg==1.0.0
+      certifi==2021.5.30
+      cffi==1.14.6
+      chardet==4.0.0
+      charset-normalizer==2.0.0
+      click==8.0.1
+      codecov==2.1.12
+      colorama==0.4.4
+      comm==0.1.4
+      conda==4.10.3
+      conda-build==3.21.4
+      conda-package-handling==1.7.3
+      coverage==6.0.1
+      cryptography==3.4.7
+      cycler==0.10.0
+      cymem==2.0.5
+      Cython==0.29.24
+      dash==2.13.0
+      dash-core-components==2.0.0
+      dash-html-components==2.0.0
+      dash-table==5.0.0
+      dataclasses==0.8
+      debugpy==1.5.0
+      decorator==5.1.0
+      defusedxml==0.7.1
+      distro==1.8.0
+      Django==3.2.6
+      docker-pycreds==0.4.0
+      docutils==0.17.1
+      empy==4.0.1
+      entrypoints==0.3
+      evo==1.25.1
+      exceptiongroup==1.1.3
+      expecttest==0.1.3
+      fastjsonschema==2.18.1
+      filelock==3.3.0
+      flake8==3.7.9
+      Flask==2.0.2
+      fqdn==1.5.1
+      future==0.18.2
+      fvcore==0.1.5.post20221221
+      genpy==2022.1
+      gitdb==4.0.10
+      GitPython==3.1.37
+      glob2==0.7
+      google-auth==1.35.0
+      google-auth-oauthlib==0.4.6
+      graphsurgeon==0.4.5
+      graphviz==0.20.1
+      grpcio==1.41.0
+      gunicorn==20.1.0
+      h11==0.12.0
+      httptools==0.2.0
+      hypothesis==4.50.8
+      idna==3.1
+      imagesize==1.2.0
+      importlib-metadata==6.8.0
+      importlib-resources==6.1.0
+      iniconfig==1.1.1
+      iopath==0.1.9
+      ipykernel==6.4.1
+      ipython==7.28.0
+      ipython-genutils==0.2.0
+      ipywidgets==8.1.1
+      isoduration==20.11.0
+      itsdangerous==2.0.1
+      jedi==0.18.0
+      Jinja2==3.0.3
+      joblib==1.1.0
+      json5==0.9.6
+      jsonpointer==2.4
+      jsonschema==4.19.1
+      jsonschema-specifications==2023.7.1
+      jupyter_client==7.4.9
+      jupyter_core==5.3.2
+      jupyter-events==0.7.0
+      jupyter-lsp==2.2.0
+      jupyter_server==2.7.3
+      jupyter_server_terminals==0.4.4
+      jupyter-tensorboard==0.2.0
+      jupyterlab==4.0.6
+      jupyterlab-pygments==0.1.2
+      jupyterlab_server==2.25.0
+      jupyterlab-widgets==3.0.9
+      jupytext==1.13.0
+      kiwisolver==1.3.2
+      lark-parser==0.7.8
+      lazy_loader==0.3
+      libarchive-c==3.1
+      librosa==0.8.1
+      lightning-utilities==0.9.0
+      llvmlite==0.35.0
+      lmdb==1.2.1
+      lz4==4.3.2
+      Markdown==3.3.4
+      markdown-it-py==1.1.0
+      MarkupSafe==2.1.3
+      matplotlib-inline==0.1.3
+      mccabe==0.6.1
+      mdit-py-plugins==0.2.8
+      mistune==3.0.2
+      mock==4.0.3
+      murmurhash==1.0.5
+      natsort==8.4.0
+      nbclient==0.5.4
+      nbconvert==7.9.2
+      nbformat==5.7.0
+      nest-asyncio==1.5.8
+      networkx==3.1
+      nltk==3.6.4
+      notebook==6.4.1
+      notebook_shim==0.2.3
+      numba==0.52.0
+      numexpr==2.8.6
+      numpy==1.21.2
+      nvidia-dali-cuda110==1.6.0
+      nvidia-dlprof-pytorch-nvtx==1.6.0
+      nvidia-dlprofviewer==1.6.0
+      nvidia-pyindex==1.0.9
+      oauthlib==3.1.1
+      onnx==1.8.204
+      overrides==7.4.0
+      packaging==23.2
+      pandas==2.0.3
+      pandocfilters==1.5.0
+      parso==0.8.2
+      pathtools==0.1.2
+      pathy==0.6.0
+      pexpect==4.8.0
+      pickleshare==0.7.5
+      Pillow==10.0.1
+      pip==21.2.4
+      pkginfo==1.7.1
+      pkgutil_resolve_name==1.3.10
+      platformdirs==3.11.0
+      plotly==5.17.0
+      pluggy==1.0.0
+      plyfile==1.0.3
+      point-cloud-utils==0.30.4
+      polygraphy==0.33.0
+      pooch==1.5.1
+      portalocker==2.3.2
+      preshed==3.0.5
+      prettytable==2.2.1
+      prometheus-client==0.11.0
+      prompt-toolkit==3.0.20
+      protobuf==3.18.1
+      psutil==5.8.0
+      ptyprocess==0.7.0
+      py==1.10.0
+      py3rosmsgs==1.18.2
+      pyasn1==0.4.8
+      pyasn1-modules==0.2.8
+      pybind11==2.8.0
+      pycocotools==2.0+nv0.5.1
+      pycodestyle==2.11.0
+      pycosat==0.6.3
+      pycparser==2.20
+      pydantic==1.8.2
+      pydot==1.4.2
+      pyflakes==2.1.1
+      Pygments==2.10.0
+      pykitti==0.3.1
+      pymesh==1.0.2
+      pyOpenSSL==20.0.1
+      pyparsing==2.4.7
+      pyquaternion==0.9.9
+      pyrsistent==0.18.0
+      pyserial==3.5
+      PySocks==1.7.1
+      pytest==6.2.5
+      pytest-cov==3.0.0
+      pytest-pythonpath==0.7.3
+      python-dateutil==2.8.2
+      python-dotenv==0.19.1
+      python-hostlist==1.21
+      python-json-logger==2.0.7
+      python-nvd3==0.15.0
+      python-slugify==5.0.2
+      pytools==2023.1.1
+      pytorch-quantization==2.1.0
+      pytorch3d==0.7.2
+      pytz==2021.3
+      PyWavelets==1.4.1
+      PyYAML==5.4.1
+      pyzmq==25.1.1
+      referencing==0.30.2
+      regex==2021.10.8
+      requests==2.31.0
+      requests-oauthlib==1.3.0
+      resampy==0.2.2
+      retrying==1.3.4
+      revtok==0.0.3
+      rfc3339-validator==0.1.4
+      rfc3986-validator==0.1.1
+      rosbags==0.9.16
+      rpds-py==0.10.4
+      rsa==4.7.2
+      ruamel.yaml==0.17.35
+      ruamel.yaml.clib==0.2.8
+      sacremoses==0.0.46
+      scikit-image==0.21.0
+      scikit-learn==1.0
+      scikit-video==1.1.11
+      scipy==1.10.1
+      seaborn==0.13.0
+      Send2Trash==1.8.2
+      sentry-sdk==1.31.0
+      setproctitle==1.3.3
+      setuptools==58.2.0
+      setuptools-scm==8.0.4
+      shellingham==1.4.0
+      six==1.16.0
+      smart-open==5.2.1
+      smmap==5.0.1
+      sniffio==1.3.0
+      snowballstemmer==2.1.0
+      SoundFile==0.10.3.post1
+      soupsieve==2.0.1
+      spacy==3.1.3
+      spacy-legacy==3.0.8
+      Sphinx==4.2.0
+      sphinx-glpi-theme==0.3
+      sphinx-rtd-theme==1.0.0
+      sphinxcontrib-applehelp==1.0.2
+      sphinxcontrib-devhelp==1.0.2
+      sphinxcontrib-htmlhelp==2.0.0
+      sphinxcontrib-jsmath==1.0.1
+      sphinxcontrib-qthelp==1.0.3
+      sphinxcontrib-serializinghtml==1.1.5
+      sqlparse==0.4.2
+      srsly==2.4.1
+      tabulate==0.8.9
+      tenacity==8.2.3
+      tensorboard==2.6.0
+      tensorboard-data-server==0.6.1
+      tensorboard-plugin-wit==1.8.0
+      tensorrt==8.0.3.4
+      termcolor==2.3.0
+      terminado==0.12.1
+      testpath==0.5.0
+      text-unidecode==1.3
+      thinc==8.0.10
+      threadpoolctl==3.0.0
+      tifffile==2023.7.10
+      tinycss2==1.2.1
+      tinycudann==1.7
+      toml==0.10.2
+      tomli==1.2.1
+      torch==1.10.0a0+0aef44c
+      torch-tb-profiler==0.4.3
+      torchmetrics==1.2.0
+      torchtext==0.11.0a0
+      torchvision==0.11.0a0
+      torchviz==0.0.2
+      tornado==6.3.3
+      tqdm==4.62.3
+      traitlets==5.11.2
+      trimesh==3.23.5
+      typer==0.4.0
+      types-python-dateutil==2.8.19.14
+      typing_extensions==4.8.0
+      tzdata==2023.3
+      uff==0.6.9
+      uri-template==1.3.0
+      urllib3==2.0.6
+      uvicorn==0.15.0
+      uvloop==0.16.0
+      wandb==0.15.12
+      wasabi==0.8.2
+      watchgod==0.7
+      wcwidth==0.2.5
+      webcolors==1.13
+      webencodings==0.5.1
+      websocket-client==1.6.4
+      websockets==10.0
+      Werkzeug==2.2.3
+      wheel==0.37.0
+      whitenoise==5.3.0
+      widgetsnbextension==4.0.9
+      yacs==0.1.8
+      zipp==3.17.0
+      zstandard==0.21.0
+
+
+To install the docker image follow the instructions from the original markdown below.
+
 # **LONER**: **L**iDAR **O**nly **Ne**ural **R**epresentations for Real-Time SLAM
 
 ### [Paper](https://arxiv.org/abs/2309.04937) | [Project Page](https://bit.ly/loner_slam)

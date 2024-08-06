@@ -14,6 +14,7 @@ from typing import Union
 
 import numpy as np
 import pytorch3d.transforms
+from scipy.spatial.transform import Rotation as R
 import torch
 
 from common.pose_utils import (WorldCube, tensor_to_transform,
@@ -83,10 +84,17 @@ class Pose:
     ## Load in a setting dict of form {xyz: [x,y,z], "orientation": [w,x,y,z]} to a Pose
     # @returns a Pose representing the 
     def from_settings(pose_dict: dict, fixed: bool = True) -> "Pose":
-        xyz = torch.Tensor(pose_dict['xyz'])
-        quat = torch.Tensor(pose_dict['orientation'])
+        # xyz = torch.Tensor(pose_dict['xyz'])
+        # quat = torch.Tensor(pose_dict['orientation'])
 
-        axis_angle = pytorch3d.transforms.quaternion_to_axis_angle(quat)
+        # axis_angle = pytorch3d.transforms.quaternion_to_axis_angle(quat)
+        # tensor = torch.cat((xyz, axis_angle))
+        # return Pose(pose_tensor=tensor, fixed=fixed)
+        
+        xyz = torch.Tensor(pose_dict['xyz'])
+        quat = pose_dict['orientation']
+
+        axis_angle = torch.Tensor(R.from_quat(quat).as_rotvec())
         tensor = torch.cat((xyz, axis_angle))
         return Pose(pose_tensor=tensor, fixed=fixed)
 
