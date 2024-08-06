@@ -1,0 +1,512 @@
+!!python/object/new:common.settings.Settings
+dictitems:
+  calibration: &id012
+    camera_intrinsic:
+      distortion: &id003
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      - 0.0
+      height: 360
+      k: &id004
+      - - 487.44329833984375
+        - 0.0
+        - 325.61627197265625
+      - - 0.0
+        - 487.44329833984375
+        - 189.09432983398438
+      - - 0.0
+        - 0.0
+        - 1.0
+      new_k: null
+      width: 640
+    lidar_to_camera:
+      orientation: &id005
+      - 0.000296490977
+      - -0.796265957
+      - 0.60494659
+      - -0.000246003922
+      xyz: &id006
+      - -0.05984655
+      - -0.19272494
+      - -0.12220825
+  dataset_path: /home/esulimma/data/haveri_hpk/02_02_04/harveri-hpk_02_02_04.bag
+  debug: &id013
+    draw_comp_graph: false
+    draw_loss_distribution: false
+    draw_rays_eps: false
+    draw_samples: false
+    flags: &id001
+      draw_comp_graph: false
+      draw_loss_distribution: false
+      draw_rays_eps: false
+      draw_samples: false
+      log_losses: false
+      log_times: false
+      profile: false
+      profile_optimizer: false
+      pytorch_detect_anomaly: false
+      store_ray: false
+      use_groundtruth_poses: false
+      visualize_loss: false
+      write_frame_point_clouds: false
+      write_icp_point_clouds: false
+      write_ray_point_clouds: false
+    global_enabled: true
+    log_losses: false
+    log_times: false
+    profile: false
+    profile_optimizer: false
+    pytorch_detect_anomaly: false
+    store_ray: false
+    use_groundtruth_poses: false
+    visualize_loss: false
+    write_frame_point_clouds: false
+    write_icp_point_clouds: false
+    write_ray_point_clouds: false
+  experiment_name: 02_02_04_dynmask_061424_082637
+  log_directory: /home/esulimma/LonerSLAM/outputs//02_02_04_dynmask_061424_082637/
+  mapper: &id014
+    data_prep_on_cpu: true
+    debug: !!python/object/new:common.settings.Settings
+      dictitems:
+        draw_comp_graph: false
+        draw_loss_distribution: false
+        draw_rays_eps: false
+        draw_samples: false
+        flags: *id001
+        global_enabled: true
+        log_losses: false
+        log_times: false
+        profile: false
+        profile_optimizer: false
+        pytorch_detect_anomaly: false
+        store_ray: false
+        use_groundtruth_poses: false
+        visualize_loss: false
+        write_frame_point_clouds: false
+        write_icp_point_clouds: false
+        write_ray_point_clouds: false
+      state: !!python/tuple
+      - draw_comp_graph: false
+        draw_loss_distribution: false
+        draw_rays_eps: false
+        draw_samples: false
+        flags: *id001
+        global_enabled: true
+        log_losses: false
+        log_times: false
+        profile: false
+        profile_optimizer: false
+        pytorch_detect_anomaly: false
+        store_ray: false
+        use_groundtruth_poses: false
+        visualize_loss: false
+        write_frame_point_clouds: false
+        write_icp_point_clouds: false
+        write_ray_point_clouds: false
+      - &id010 !!python/name:builtins.tuple ''
+      - false
+    device: 0
+    experiment_name: 02_02_04_dynmask_061424_082637
+    keyframe_manager:
+      keyframe_selection:
+        motion:
+          rotation_threshold_deg: 22.5
+          translation_threshold_m: 0.5
+        strategy: TEMPORAL
+        temporal:
+          time_diff_seconds: 3
+      window_selection:
+        hybrid_settings:
+          num_recent_frames: 1
+        strategy: HYBRID
+        window_size: 8
+    lidar_only: true
+    log_directory: /home/esulimma/LonerSLAM/outputs//02_02_04_dynmask_061424_082637/
+    log_level: DISABLED
+    optimizer:
+      data_prep_on_cpu: true
+      detach_rgb_from_poses: true
+      detach_rgb_from_sigma: false
+      enabled: true
+      freeze_poses: false
+      keyframe_schedule:
+      - iteration_schedule:
+        - freeze_poses: true
+          freeze_rgb_mlp: true
+          freeze_sigma_mlp: false
+          num_iterations: 1000
+        num_keyframes: 1
+      - iteration_schedule:
+        - freeze_poses: false
+          freeze_rgb_mlp: true
+          freeze_sigma_mlp: true
+          latest_kf_only: true
+          num_iterations: 50
+        - freeze_poses: false
+          freeze_rgb_mlp: true
+          freeze_sigma_mlp: false
+          num_iterations: 50
+        num_keyframes: -1
+      model_config:
+        data:
+          ray_range: &id002
+          - 2.5
+          - 45
+        loss:
+          JS_loss:
+            alpha: 1.0
+            max_js_score: 10.0
+            min_js_score: 0.1
+          cam_lambda: 1
+          decay_depth_eps: true
+          decay_los_lambda: true
+          depth_eps: 3.0
+          depth_eps_decay_rate: 0.95
+          depth_eps_decay_steps: 100
+          depthloss_lambda: 0.005
+          los_lambda: 1000.0
+          los_lambda_decay_rate: 0.0001
+          los_lambda_decay_steps: 15000
+          loss_selection: L1_JS
+          min_depth_eps: 0.5
+          min_los_lambda: 10.0
+          std_lambda: 0.0
+        model:
+          model_type: nerf_decoupled
+          nerf_config:
+            appearance_embedding:
+              dim: 32
+              enabled: true
+            dir_encoding_intensity:
+              degree: 4
+              otype: SphericalHarmonics
+            enable_view_dependence: true
+            intensity_network:
+              activation: ReLU
+              n_hidden_layers: 4
+              n_neurons: 64
+              otype: FullyFusedMLP
+              output_activation: None
+            pos_encoding_intensity:
+              base_resolution: 16
+              log2_hashmap_size: 19
+              n_features_per_level: 2
+              n_levels: 16
+              otype: HashGrid
+            pos_encoding_sigma:
+              base_resolution: 16
+              log2_hashmap_size: 18
+              n_features_per_level: 2
+              n_levels: 16
+              otype: HashGrid
+            sigma_network:
+              activation: ReLU
+              n_hidden_layers: 1
+              n_neurons: 64
+              otype: FullyFusedMLP
+              output_activation: None
+          num_colors: 3
+          occ_model:
+            N_iters_acc: 10
+            lr: 0.0001
+            voxel_size: 100
+          ray_range: *id002
+          render:
+            N_samples_test: 2048
+            N_samples_train: 512
+            chunk: 32768
+            lindisp: false
+            netchunk: 0
+            perturb: 1.0
+            raw_noise_std: 1.0
+            retraw: true
+            white_bkgd: false
+        train:
+          decay_rate: 0.0005
+          lrate_gamma: 1.0
+          lrate_pose: 0.001
+          lrate_rgb: 0.01
+          lrate_sigma_mlp: 0.01
+          pose_lrate_gamma: 1.0
+          rgb_weight_decay: 1.0e-06
+          sigma_weight_decay: 1.0e-06
+      num_samples:
+        lidar: 512
+        sky: 64
+      rays_selection:
+        strategy: MASK
+      samples_selection:
+        strategy: OGM
+      skip_pose_refinement: true
+  run_config: &id015
+    baseline: defaults.yaml
+    calibration: null
+    changes:
+      calibration:
+        camera_intrinsic:
+          distortion: *id003
+          height: 360
+          k: *id004
+          new_k: null
+          width: 640
+        lidar_to_camera:
+          orientation: *id005
+          xyz: *id006
+      debug:
+        flags:
+          draw_comp_graph: false
+          draw_loss_distribution: false
+          draw_rays_eps: false
+          draw_samples: false
+          log_losses: false
+          log_times: false
+          profile: false
+          profile_optimizer: false
+          pytorch_detect_anomaly: false
+          store_ray: false
+          use_groundtruth_poses: false
+          visualize_loss: false
+          write_frame_point_clouds: false
+          write_icp_point_clouds: false
+          write_ray_point_clouds: false
+        global_enabled: true
+      mapper:
+        optimizer:
+          model_config:
+            data:
+              ray_range: *id002
+            loss:
+              JS_loss:
+                alpha: 1.0
+                max_js_score: 10.0
+                min_js_score: 0.1
+              decay_depth_eps: true
+              decay_los_lambda: true
+              depth_eps: 3.0
+              depth_eps_decay_rate: 0.95
+              depth_eps_decay_steps: 100
+              depthloss_lambda: 0.005
+              los_lambda: 1000.0
+              los_lambda_decay_rate: 0.0001
+              los_lambda_decay_steps: 15000
+              loss_selection: L1_JS
+              min_depth_eps: 0.5
+              min_los_lambda: 10.0
+            model:
+              occ_model:
+                N_iters_acc: 10
+                lr: 0.0001
+                voxel_size: 100
+              ray_range: *id002
+              render:
+                N_samples_test: 2048
+                N_samples_train: 512
+                chunk: 32768
+                lindisp: false
+                netchunk: 0
+                perturb: 1.0
+                raw_noise_std: 1.0
+                retraw: true
+                white_bkgd: false
+            train:
+              decay_rate: 0.0005
+              lrate_gamma: 1.0
+              lrate_pose: 0.001
+              lrate_rgb: 0.01
+              lrate_sigma_mlp: 0.01
+              pose_lrate_gamma: 1.0
+              rgb_weight_decay: 1.0e-06
+              sigma_weight_decay: 1.0e-06
+          num_samples:
+            lidar: 512
+            sky: 64
+          rays_selection:
+            strategy: MASK
+          samples_selection:
+            strategy: OGM
+      system:
+        ros_names:
+          camera: /zed2i/zed_node/rgb/image_rect_color/
+          camera_suffix: compressed
+          lidar: hesai/pandar
+          topic_prefix: ''
+        sky_segmentation: true
+        world_cube:
+          compute_from_groundtruth: true
+          trajectory_bounding_box:
+            x: &id007
+            - -51
+            - 39
+            y: &id008
+            - -97
+            - 39
+            z: &id009
+            - -2.75
+            - 19.15
+      tracker:
+        compute_sky_rays: true
+    dataset: ~/data/haveri_hpk/02_02_04/harveri-hpk_02_02_04.bag
+    dataset_family: hpk
+    experiment_name: 02_02_04_dynmask
+    groundtruth_traj: ~/data/haveri_hpk/02_02_04/ground_truth_traj.csv
+    lidar_vertical_fov:
+    - -52.1
+    - 52.1
+    meshing_bounding_box:
+      x:
+      - -33
+      - 43
+      y:
+      - -40
+      - 75
+      z:
+      - -6.75
+      - 19.15
+  system: &id016
+    image_scale_factor: 0.5
+    lidar_fov:
+      enabled: false
+      range:
+      - - 0
+        - 235
+      - - 305
+        - 360
+    lidar_only: true
+    lidar_timestamps_relative_to_start: true
+    log_dir_prefix: ~/LonerSLAM/outputs/
+    ros_names:
+      camera: /zed2i/zed_node/rgb/image_rect_color/
+      camera_suffix: compressed
+      lidar: hesai/pandar
+      topic_prefix: ''
+    single_threaded: false
+    sky_segmentation: true
+    synchronization: &id011
+      enabled: true
+      max_time_delta: 3
+      min_buffer_size: 2
+    world_cube:
+      compute_from_groundtruth: true
+      trajectory_bounding_box:
+        x: *id007
+        y: *id008
+        z: *id009
+  tracker: &id017
+    compute_sky_rays: true
+    debug: !!python/object/new:common.settings.Settings
+      dictitems:
+        draw_comp_graph: false
+        draw_loss_distribution: false
+        draw_rays_eps: false
+        draw_samples: false
+        flags: *id001
+        global_enabled: true
+        log_losses: false
+        log_times: false
+        profile: false
+        profile_optimizer: false
+        pytorch_detect_anomaly: false
+        store_ray: false
+        use_groundtruth_poses: false
+        visualize_loss: false
+        write_frame_point_clouds: false
+        write_icp_point_clouds: false
+        write_ray_point_clouds: false
+      state: !!python/tuple
+      - draw_comp_graph: false
+        draw_loss_distribution: false
+        draw_rays_eps: false
+        draw_samples: false
+        flags: *id001
+        global_enabled: true
+        log_losses: false
+        log_times: false
+        profile: false
+        profile_optimizer: false
+        pytorch_detect_anomaly: false
+        store_ray: false
+        use_groundtruth_poses: false
+        visualize_loss: false
+        write_frame_point_clouds: false
+        write_icp_point_clouds: false
+        write_ray_point_clouds: false
+      - *id010
+      - false
+    experiment_name: 02_02_04_dynmask_061424_082637
+    frame_synthesis:
+      decimate_on_load: true
+      frame_decimation_rate_hz: 5
+      frame_delta_t_sec_tolerance: 0.02
+      frame_match_tolerance: 0.01
+      sky_removal: null
+      strategy: null
+    icp:
+      downsample:
+        target_uniform_point_count: 5000
+        type: UNIFORM
+        voxel_downsample_size: 0.1
+      scan_duration: 0.9
+      schedule:
+      - max_iterations: 10
+        relative_fitness: 1.0e-08
+        relative_rmse: 1.0e-08
+        threshold: 1.5
+      - max_iterations: 10
+        relative_fitness: 1.0e-08
+        relative_rmse: 1.0e-08
+        threshold: 0.125
+    lidar_only: true
+    log_directory: /home/esulimma/LonerSLAM/outputs//02_02_04_dynmask_061424_082637/
+    motion_compensation:
+      enabled: true
+      use_gpu: true
+    synchronization: *id011
+  world_cube: &id018
+    scale_factor: !!python/object/apply:torch._utils._rebuild_tensor_v2
+    - !!python/object/apply:torch.storage._load_from_bytes
+      - !!binary |
+        gAKKCmz8nEb5IGqoUBkugAJN6QMugAJ9cQAoWBAAAABwcm90b2NvbF92ZXJzaW9ucQFN6QNYDQAA
+        AGxpdHRsZV9lbmRpYW5xAohYCgAAAHR5cGVfc2l6ZXNxA31xBChYBQAAAHNob3J0cQVLAlgDAAAA
+        aW50cQZLBFgEAAAAbG9uZ3EHSwR1dS6AAihYBwAAAHN0b3JhZ2VxAGN0b3JjaApGbG9hdFN0b3Jh
+        Z2UKcQFYDwAAADEwMzEzNTQ4ODk4MzkwNHECWAMAAABjcHVxA0sBTnRxBFEugAJdcQBYDwAAADEw
+        MzEzNTQ4ODk4MzkwNHEBYS4BAAAAAAAAAMWB6UI=
+    - 0
+    - !!python/tuple
+      - 1
+    - !!python/tuple
+      - 1
+    - false
+    - !!python/object/apply:collections.OrderedDict
+      - []
+    shift: !!python/object/apply:torch._utils._rebuild_tensor_v2
+    - !!python/object/apply:torch.storage._load_from_bytes
+      - !!binary |
+        gAKKCmz8nEb5IGqoUBkugAJN6QMugAJ9cQAoWBAAAABwcm90b2NvbF92ZXJzaW9ucQFN6QNYDQAA
+        AGxpdHRsZV9lbmRpYW5xAohYCgAAAHR5cGVfc2l6ZXNxA31xBChYBQAAAHNob3J0cQVLAlgDAAAA
+        aW50cQZLBFgEAAAAbG9uZ3EHSwR1dS6AAihYBwAAAHN0b3JhZ2VxAGN0b3JjaApGbG9hdFN0b3Jh
+        Z2UKcQFYDwAAADEwMzEzNTQ4ODk4Mjg2NHECWAMAAABjcHVxA0sDTnRxBFEugAJdcQBYDwAAADEw
+        MzEzNTQ4ODk4Mjg2NHEBYS4DAAAAAAAAAGhvKMFQdrJCAG6YQA==
+    - 0
+    - !!python/tuple
+      - 3
+    - !!python/tuple
+      - 1
+    - false
+    - !!python/object/apply:collections.OrderedDict
+      - []
+state: !!python/tuple
+- calibration: *id012
+  dataset_path: /home/esulimma/data/haveri_hpk/02_02_04/harveri-hpk_02_02_04.bag
+  debug: *id013
+  experiment_name: 02_02_04_dynmask_061424_082637
+  log_directory: /home/esulimma/LonerSLAM/outputs//02_02_04_dynmask_061424_082637/
+  mapper: *id014
+  run_config: *id015
+  system: *id016
+  tracker: *id017
+  world_cube: *id018
+- *id010
+- false
